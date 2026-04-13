@@ -42,10 +42,10 @@ export function PortalMobileNav({ open, onClose }: PortalMobileNavProps) {
         <div className="p-6 border-b border-border flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3" onClick={onClose}>
             <div className="w-10 h-10 bg-primary rounded-md flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold text-lg">FR</span>
+              <span className="text-primary-foreground font-semibold text-lg">BT</span>
             </div>
             <div>
-              <span className="font-semibold text-foreground text-sm">Forensic Royalty</span>
+              <span className="font-semibold text-foreground text-sm">Btrail Revenue</span>
               <span className="text-muted-foreground text-xs block">Client Portal</span>
             </div>
           </Link>

@@ -32,7 +32,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 mb-6">
             <div className="w-12 h-12 bg-primary rounded-md flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold text-xl">FR</span>
+              <span className="text-primary-foreground font-semibold text-xl">BT</span>
             </div>
           </Link>
           <h1 className="text-2xl font-semibold text-foreground">Client Portal</h1>

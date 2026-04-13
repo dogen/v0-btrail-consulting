@@ -17,7 +17,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Forensic Royalty Auditing | Oil & Gas Revenue Analysis",
+  title: "Btrail Revenue Consulting | Oil & Gas Forensic Auditing",
   description:
     "Independent forensic auditing services for oil and gas royalty owners. Specializing in the Green River Formation and Bakken Formation. Recover underpaid royalties with detailed production analysis.",
   generator: "v0.app",
