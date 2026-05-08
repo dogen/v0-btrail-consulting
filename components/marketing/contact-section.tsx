@@ -29,11 +29,13 @@ export function ContactSection() {
               Get in Touch
             </p>
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-balance">
-              Request a complimentary royalty review
+              You shouldn&apos;t have to guess what&apos;s being taken
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              Share some basic information about your mineral interests and we&apos;ll 
-              provide an initial assessment of potential recovery opportunities at no cost.
+              If you&apos;ve noticed unexplained deductions on your royalty statements - 
+              or if the &ldquo;other deductions&rdquo; column suddenly started showing 
+              numbers after years of being blank - we can help you understand what&apos;s 
+              happening and whether it&apos;s legitimate.
             </p>
 
             <div className="space-y-6">
@@ -43,7 +45,7 @@ export function ContactSection() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="text-foreground">contact@forensicroyalty.com</p>
+                  <p className="text-foreground">contact@btrailrevenue.com</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -64,6 +66,17 @@ export function ContactSection() {
                   <p className="text-foreground">Bismarck, North Dakota</p>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-8 p-6 bg-muted/50 rounded-lg border border-border">
+              <p className="text-sm text-muted-foreground italic">
+                &ldquo;It&apos;s a matter of fairness. We didn&apos;t get any say in it. 
+                They just up and changed it. You feel like you&apos;re being cheated. 
+                It&apos;s not right.&rdquo;
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                — North Dakota mineral owner
+              </p>
             </div>
           </div>
 
@@ -104,11 +117,11 @@ export function ContactSection() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="formation">Primary Formation / Basin</Label>
+                  <Label htmlFor="county">County / Formation</Label>
                   <Input
-                    id="formation"
-                    name="formation"
-                    placeholder="e.g., Bakken, Green River, Permian"
+                    id="county"
+                    name="county"
+                    placeholder="e.g., Williams County, McKenzie County"
                   />
                 </div>
 
@@ -118,12 +131,12 @@ export function ContactSection() {
                     id="message"
                     name="message"
                     rows={4}
-                    placeholder="Brief description of your mineral interests and any concerns about your royalty payments..."
+                    placeholder="When did you first notice deductions? How much is being withheld? Have you tried to get answers from the operator?"
                   />
                 </div>
 
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Submit Request"}
+                  {isSubmitting ? "Submitting..." : "Request Free Review"}
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">

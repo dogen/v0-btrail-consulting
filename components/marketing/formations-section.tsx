@@ -1,26 +1,26 @@
-import { MapPin, Droplets, Flame } from "lucide-react"
+import { MapPin } from "lucide-react"
 
 const formations = [
   {
     name: "Bakken Formation",
     location: "North Dakota & Montana",
     description:
-      "One of the largest continuous oil accumulations in the United States. Complex horizontal drilling operations and multi-well pad developments create opportunities for production allocation errors and reporting discrepancies.",
+      "Home to an estimated 300,000 private mineral owners who collectively were owed $4.6 billion in royalties in 2023. Since the shale boom began, companies have increasingly passed on infrastructure costs to royalty owners - even on leases signed decades ago that never mentioned deductions. Some owners have seen 20-36% of their royalty income disappear to postproduction costs.",
     stats: [
-      { label: "Active Wells", value: "15,000+" },
-      { label: "Daily Production", value: "1.1M BBL" },
-      { label: "Primary Product", value: "Light Crude", icon: Droplets },
+      { label: "Private Mineral Owners", value: "300,000" },
+      { label: "Typical Deductions", value: "20-36%" },
+      { label: "State Oversight", value: "None" },
     ],
   },
   {
     name: "Green River Formation",
     location: "Colorado, Utah & Wyoming",
     description:
-      "Contains some of the richest oil shale deposits in the world. The complexity of processing arrangements and varying extraction methods requires careful audit attention to ensure proper royalty accounting.",
+      "Complex processing arrangements and varying extraction methods create opportunities for opaque deductions. Like the Bakken, mineral owners here face the challenge of deciphering royalty statements that provide only broad categories - making it nearly impossible to verify whether the costs being passed on are legitimate or properly calculated.",
     stats: [
-      { label: "Estimated Resource", value: "3T BBL" },
       { label: "Basin Area", value: "25,000 mi²" },
-      { label: "Primary Product", value: "Oil Shale", icon: Flame },
+      { label: "Processing Complexity", value: "High" },
+      { label: "Transparency", value: "Limited" },
     ],
   },
 ]
@@ -34,11 +34,13 @@ export function FormationsSection() {
             Areas of Focus
           </p>
           <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-balance">
-            Deep expertise in key North American basins
+            Where mineral owners need answers
           </h2>
           <p className="text-muted-foreground text-lg">
-            Our team maintains specialized knowledge of the regulatory environment, 
-            operator practices, and common audit findings in these prolific formations.
+            In these formations, families who have received royalty checks for generations 
+            are now watching significant portions disappear. Many leases were signed when 
+            oil was sold at or near the wellhead - long before companies began moving 
+            commodities across states and passing those costs back to owners.
           </p>
         </div>
 

@@ -3,27 +3,27 @@ import { Scale, Search, FileCheck, Calculator } from "lucide-react"
 const services = [
   {
     icon: Search,
-    title: "Production Verification",
+    title: "Deduction Analysis",
     description:
-      "Cross-reference operator-reported volumes against state records, run tickets, and third-party data sources to identify discrepancies.",
-  },
-  {
-    icon: Calculator,
-    title: "Pricing Analysis",
-    description:
-      "Audit posted prices, deductions, and market differentials to ensure royalty calculations align with lease terms and market conditions.",
+      "We examine every line item on your royalty statements - transportation, processing, gathering, compression, and those vague \"other deductions\" that companies rarely explain.",
   },
   {
     icon: FileCheck,
     title: "Lease Compliance Review",
     description:
-      "Examine lease agreements for proper application of royalty rates, deduction caps, and calculation methodologies.",
+      "Many leases signed decades ago promise royalties \"free of cost\" with no mention of postproduction deductions. We determine whether the deductions being taken are actually permitted under your lease terms.",
+  },
+  {
+    icon: Calculator,
+    title: "Historical Reconciliation",
+    description:
+      "Companies often apply retroactive adjustments going back years. We trace the history of your payments to identify when deductions started and quantify your cumulative losses.",
   },
   {
     icon: Scale,
-    title: "Recovery Support",
+    title: "Recovery Documentation",
     description:
-      "Provide comprehensive documentation and expert analysis to support negotiations or legal proceedings for royalty recovery.",
+      "We provide comprehensive documentation to support negotiations with operators or, if necessary, legal proceedings. Our work product is designed to withstand scrutiny.",
   },
 ]
 
@@ -36,11 +36,12 @@ export function ServicesSection() {
             Our Services
           </p>
           <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-balance">
-            Comprehensive royalty auditing for mineral owners
+            Making sense of what&apos;s being taken from your checks
           </h2>
           <p className="text-muted-foreground text-lg">
-            We apply rigorous accounting standards and deep industry knowledge to ensure 
-            you receive every dollar you&apos;re entitled to under your lease agreements.
+            Royalty statements can run hundreds of pages with broad categories that tell you 
+            almost nothing. &ldquo;Nothing is clear,&rdquo; as one mineral owner put it. We bring 
+            clarity to the confusion and help you understand exactly what&apos;s happening to your money.
           </p>
         </div>
 
