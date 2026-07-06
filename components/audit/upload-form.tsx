@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Upload, FileText, X, Loader2 } from "lucide-react"
-import { submitAudit } from "@/lib/audit-api"
+import { submitAudit, MAX_FILE_BYTES } from "@/lib/audit-api"
 
 export function AuditUploadForm() {
   const router = useRouter()
@@ -17,30 +17,37 @@ export function AuditUploadForm() {
   const [ownerEmail, setOwnerEmail] = useState("")
   const [state, setState] = useState("ND")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    const dropped = Array.from(e.dataTransfer.files).filter(
-      (f) => f.type === "application/pdf"
-    )
-    if (dropped.length === 0) {
+  const addFiles = useCallback((incoming: File[]) => {
+    const pdfs = incoming.filter((f) => f.type === "application/pdf")
+    if (pdfs.length === 0) {
       setError("Only PDF files are accepted")
       return
     }
-    setFiles((prev) => [...prev, ...dropped])
+    const oversize = pdfs.find((f) => f.size > MAX_FILE_BYTES)
+    if (oversize) {
+      setError(`${oversize.name} is over the 4MB per-file limit`)
+      return
+    }
+    setFiles((prev) => [...prev, ...pdfs])
     setError(null)
   }, [])
 
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragging(false)
+      addFiles(Array.from(e.dataTransfer.files))
+    },
+    [addFiles]
+  )
+
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const selected = Array.from(e.target.files).filter(
-        (f) => f.type === "application/pdf"
-      )
-      setFiles((prev) => [...prev, ...selected])
-      setError(null)
+      addFiles(Array.from(e.target.files))
     }
   }
 
@@ -61,21 +68,23 @@ export function AuditUploadForm() {
 
     setIsSubmitting(true)
     setError(null)
+    setUploadProgress(null)
 
     try {
-      const formData = new FormData()
-      formData.append("owner_name", ownerName.trim())
-      if (ownerEmail.trim()) {
-        formData.append("owner_email", ownerEmail.trim())
-      }
-      formData.append("state", state)
-      files.forEach((file) => formData.append("files", file))
-
-      const result = await submitAudit(formData)
+      const result = await submitAudit(
+        {
+          owner_name: ownerName.trim(),
+          owner_email: ownerEmail.trim(),
+          state,
+          files,
+        },
+        (uploaded, total) => setUploadProgress(`Uploading ${uploaded}/${total} documents...`)
+      )
       router.push(`/portal/audits/${result.audit_id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Submission failed")
       setIsSubmitting(false)
+      setUploadProgress(null)
     }
   }
 
@@ -103,7 +112,7 @@ export function AuditUploadForm() {
                 Drop PDF files here or click to browse
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                PDF files up to 20MB each
+                PDF files up to 4MB each
               </p>
               <input
                 id="file-input"
@@ -205,7 +214,7 @@ export function AuditUploadForm() {
           {isSubmitting ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Submitting...
+              {uploadProgress ?? "Submitting..."}
             </>
           ) : (
             <>

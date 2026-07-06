@@ -9,44 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, MapPin } from "lucide-react"
+import { sql } from "@/lib/db"
 
-const wells = [
-  {
-    api: "33-105-04521",
-    name: "SMITH 14-22H",
-    formation: "Bakken",
-    monthlyProduction: "4,521 BBL",
-    royaltyRate: "18.75%",
-    status: "Active",
-  },
-  {
-    api: "33-105-04522",
-    name: "SMITH 14-22H2",
-    formation: "Bakken",
-    monthlyProduction: "3,842 BBL",
-    royaltyRate: "18.75%",
-    status: "Active",
-  },
-  {
-    api: "49-037-21045",
-    name: "GREEN RIVER 7-1",
-    formation: "Green River",
-    monthlyProduction: "2,156 BBL",
-    royaltyRate: "16.67%",
-    status: "Active",
-  },
-  {
-    api: "33-061-01234",
-    name: "WILLISTON 8-15",
-    formation: "Three Forks",
-    monthlyProduction: "1,892 BBL",
-    royaltyRate: "20.00%",
-    status: "Active",
-  },
-]
+export async function WellSummary() {
+  const wells = await sql`
+    SELECT api, name, formation, monthly_production_bbl, royalty_rate_pct::float8 AS royalty_rate_pct
+    FROM wells
+    ORDER BY monthly_production_bbl DESC NULLS LAST
+    LIMIT 6
+  `
 
-export function WellSummary() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -59,34 +32,47 @@ export function WellSummary() {
         </Link>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto -mx-6 px-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>API Number</TableHead>
-                <TableHead>Well Name</TableHead>
-                <TableHead className="hidden md:table-cell">Formation</TableHead>
-                <TableHead className="text-right">Monthly Prod.</TableHead>
-                <TableHead className="text-right hidden sm:table-cell">Royalty Rate</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {wells.map((well) => (
-                <TableRow key={well.api}>
-                  <TableCell className="font-mono text-sm">{well.api}</TableCell>
-                  <TableCell className="font-medium">{well.name}</TableCell>
-                  <TableCell className="hidden md:table-cell text-muted-foreground">
-                    {well.formation}
-                  </TableCell>
-                  <TableCell className="text-right font-mono">{well.monthlyProduction}</TableCell>
-                  <TableCell className="text-right font-mono hidden sm:table-cell">
-                    {well.royaltyRate}
-                  </TableCell>
+        {wells.length === 0 ? (
+          <div className="py-8 text-center">
+            <MapPin className="w-8 h-8 mx-auto mb-3 text-muted-foreground/50" />
+            <p className="text-sm text-muted-foreground">
+              No wells on file yet. Wells appear here once your first audit is underway.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto -mx-6 px-6">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>API Number</TableHead>
+                  <TableHead>Well Name</TableHead>
+                  <TableHead className="hidden md:table-cell">Formation</TableHead>
+                  <TableHead className="text-right">Monthly Prod.</TableHead>
+                  <TableHead className="text-right hidden sm:table-cell">Royalty Rate</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {wells.map((well) => (
+                  <TableRow key={well.api}>
+                    <TableCell className="font-mono text-sm">{well.api}</TableCell>
+                    <TableCell className="font-medium">{well.name}</TableCell>
+                    <TableCell className="hidden md:table-cell text-muted-foreground">
+                      {well.formation}
+                    </TableCell>
+                    <TableCell className="text-right font-mono">
+                      {well.monthly_production_bbl !== null
+                        ? `${well.monthly_production_bbl.toLocaleString("en-US")} BBL`
+                        : "—"}
+                    </TableCell>
+                    <TableCell className="text-right font-mono hidden sm:table-cell">
+                      {well.royalty_rate_pct !== null ? `${well.royalty_rate_pct.toFixed(2)}%` : "—"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

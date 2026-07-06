@@ -3,6 +3,9 @@ import { RecentAudits } from "@/components/portal/recent-audits"
 import { WellSummary } from "@/components/portal/well-summary"
 import { ActivityFeed } from "@/components/portal/activity-feed"
 
+// Live data on every request — never serve a stale prerender
+export const dynamic = "force-dynamic"
+
 export default function PortalPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6">

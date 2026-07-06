@@ -23,28 +23,36 @@ export function StatusTracker({ auditId, onComplete }: StatusTrackerProps) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let timeout: NodeJS.Timeout
+    let cancelled = false
 
     const poll = async () => {
       try {
         const data = await getAuditStatus(auditId)
+        if (cancelled) return
         setStatus(data)
 
         if (data.status === "completed" || data.status === "failed") {
-          clearInterval(interval)
           if (data.status === "completed") {
             onComplete(data)
           }
+          return
         }
+        // Pending audits sit in a review queue — poll gently. Running ones
+        // are actively being analyzed, so check more often.
+        timeout = setTimeout(poll, data.status === "pending" ? 30000 : 5000)
       } catch (err) {
+        if (cancelled) return
         setError(err instanceof Error ? err.message : "Failed to check status")
       }
     }
 
     poll()
-    interval = setInterval(poll, 5000)
 
-    return () => clearInterval(interval)
+    return () => {
+      cancelled = true
+      clearTimeout(timeout)
+    }
   }, [auditId, onComplete])
 
   if (error) {
@@ -97,10 +105,21 @@ export function StatusTracker({ auditId, onComplete }: StatusTrackerProps) {
             </Badge>
           </div>
 
+          {status.status === "pending" && (
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                Received — your documents are in the review queue. An analyst will begin the
+                gap analysis shortly; we&apos;ll email you when your report is ready. You can
+                close this page and check back anytime.
+              </p>
+            </div>
+          )}
+
           {status.status === "running" && (
             <div className="p-4 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground">
-                Analyzing your documents against state production records. This usually takes 2–5 minutes.
+                Analysis in progress — your documents are being cross-referenced against state
+                production records.
               </p>
               <div className="mt-3 w-full h-1.5 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-accent rounded-full animate-pulse" style={{ width: "60%" }} />

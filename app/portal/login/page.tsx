@@ -18,12 +18,28 @@ export default function LoginPage() {
     setIsLoading(true)
     setError("")
 
-    // Simulate authentication - replace with real auth
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    
-    // For demo purposes, always succeed
-    router.push("/portal")
-    setIsLoading(false)
+    const password = new FormData(e.currentTarget).get("password")
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      })
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        setError(body?.detail ?? "Sign in failed. Please try again.")
+        setIsLoading(false)
+        return
+      }
+
+      router.push("/portal")
+      router.refresh()
+    } catch {
+      setError("Could not reach the server. Please try again.")
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -61,7 +77,6 @@ export default function LoginPage() {
                   name="email"
                   type="email"
                   placeholder="you@company.com"
-                  required
                   autoComplete="email"
                 />
               </div>
