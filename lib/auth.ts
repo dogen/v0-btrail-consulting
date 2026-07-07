@@ -1,37 +1,26 @@
-// Signed session cookie, shared by the login route (Node runtime) and
-// middleware (Edge runtime) — Web Crypto only, no node:crypto.
+import { betterAuth } from "better-auth"
+import { Pool } from "pg"
 
-export const SESSION_COOKIE = "btrail_session"
-export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30 // 30 days
-
-const encoder = new TextEncoder()
-
-async function hmacHex(secret: string, data: string): Promise<string> {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  )
-  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(data))
-  return Array.from(new Uint8Array(sig), (b) => b.toString(16).padStart(2, "0")).join("")
-}
-
-/** Cookie value: `<expiresAtEpochSeconds>.<hmac(secret, expiresAt)>` */
-export async function createSessionValue(secret: string): Promise<string> {
-  const expiresAt = Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SECONDS
-  return `${expiresAt}.${await hmacHex(secret, String(expiresAt))}`
-}
-
-export async function verifySessionValue(secret: string, value: string | undefined): Promise<boolean> {
-  if (!value) return false
-  const [expiresAt, signature] = value.split(".")
-  if (!expiresAt || !signature) return false
-  if (!/^\d+$/.test(expiresAt) || Number(expiresAt) < Date.now() / 1000) return false
-  const expected = await hmacHex(secret, expiresAt)
-  // Constant-time comparison: compare HMACs of both strings instead of the
-  // strings themselves so length/content differences don't leak timing.
-  const [a, b] = await Promise.all([hmacHex(secret, signature), hmacHex(secret, expected)])
-  return a === b
-}
+// Email/password auth backed by the same Neon database as the portal data
+// (DATABASE_URL is Neon's pooled connection string, so a tiny pg pool per
+// serverless instance is safe). The signing secret comes from AUTH_SECRET —
+// better-auth reads it (or BETTER_AUTH_SECRET) from the environment.
+//
+// Public sign-up is disabled: the portal lists every client's audits, so
+// accounts are created by us with `npm run user:create`.
+export const auth = betterAuth({
+  database: new Pool({ connectionString: process.env.DATABASE_URL, max: 1 }),
+  emailAndPassword: {
+    enabled: true,
+    disableSignUp: true,
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 30, // 30 days, matching the old shared-password cookie
+    updateAge: 60 * 60 * 24, // 1 day
+  },
+  trustedOrigins: [
+    "https://btrail-consulting.netlify.app",
+    "https://btrail.io",
+    "https://www.btrail.io",
+  ],
+})

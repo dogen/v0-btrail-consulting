@@ -13,6 +13,7 @@ import {
 import { Plus, FileSearch } from "lucide-react"
 import { sql } from "@/lib/db"
 import { formatCurrency, timeAgo } from "@/lib/format"
+import { requireSession } from "@/lib/session"
 
 export const dynamic = "force-dynamic"
 
@@ -24,6 +25,8 @@ const statusConfig = {
 }
 
 export default async function AuditsPage() {
+  await requireSession()
+
   const audits = await sql`
     SELECT a.id, a.reference, a.owner_name, a.state, a.status,
            a.started_at, a.total_gap::float8 AS total_gap,

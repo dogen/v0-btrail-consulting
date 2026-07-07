@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -12,11 +12,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bell, Search, Menu, X, User, Settings, LogOut } from "lucide-react"
+import { Bell, Search, Menu, User, LogOut } from "lucide-react"
 import { PortalMobileNav } from "./mobile-nav"
+import { signOut, useSession } from "@/lib/auth-client"
 
 export function PortalHeader() {
+  const router = useRouter()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const { data: session } = useSession()
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/portal/login")
+    router.refresh()
+  }
 
   return (
     <>
@@ -53,25 +62,16 @@ export function PortalHeader() {
                   <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                     <User className="w-4 h-4 text-muted-foreground" />
                   </div>
-                  <span className="hidden sm:inline text-sm">John Doe</span>
+                  <span className="hidden sm:inline text-sm">{session?.user.name ?? "Account"}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
-                  <p className="font-medium">John Doe</p>
-                  <p className="text-xs text-muted-foreground font-normal">john@example.com</p>
+                  <p className="font-medium">{session?.user.name ?? "Account"}</p>
+                  <p className="text-xs text-muted-foreground font-normal">{session?.user.email ?? ""}</p>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <User className="w-4 h-4 mr-2" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="w-4 h-4 mr-2" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleSignOut}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign Out
                 </DropdownMenuItem>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { signIn } from "@/lib/auth-client"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -18,18 +19,15 @@ export default function LoginPage() {
     setIsLoading(true)
     setError("")
 
-    const password = new FormData(e.currentTarget).get("password")
+    const formData = new FormData(e.currentTarget)
+    const email = String(formData.get("email") ?? "")
+    const password = String(formData.get("password") ?? "")
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      })
+      const { error: signInError } = await signIn.email({ email, password })
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => null)
-        setError(body?.detail ?? "Sign in failed. Please try again.")
+      if (signInError) {
+        setError(signInError.message ?? "Sign in failed. Please try again.")
         setIsLoading(false)
         return
       }
@@ -77,20 +75,13 @@ export default function LoginPage() {
                   name="email"
                   type="email"
                   placeholder="you@company.com"
+                  required
                   autoComplete="email"
                 />
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/portal/forgot-password"
-                    className="text-sm text-accent hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   name="password"

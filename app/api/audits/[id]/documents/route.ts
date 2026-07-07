@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { sql } from "@/lib/db"
+import { requireApiSession } from "@/lib/session"
 
 // Vercel serverless caps request bodies at ~4.5MB, so files upload one per
 // request and we enforce a 4MB ceiling per file.
 const MAX_FILE_BYTES = 4 * 1024 * 1024
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const denied = await requireApiSession(request)
+  if (denied) return denied
+
   const { id } = await params
   if (!z.string().uuid().safeParse(id).success) {
     return NextResponse.json({ detail: "Audit not found" }, { status: 404 })

@@ -1,6 +1,8 @@
 import { AuditUploadForm } from "@/components/audit/upload-form"
+import { requireSession } from "@/lib/session"
 
-export default function NewAuditPage() {
+export default async function NewAuditPage() {
+  await requireSession()
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div>

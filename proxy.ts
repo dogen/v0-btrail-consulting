@@ -1,20 +1,20 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { SESSION_COOKIE, verifySessionValue } from "@/lib/auth"
+import { getSessionCookie } from "better-auth/cookies"
 
-const PUBLIC_PATHS = ["/portal/login", "/api/auth/login"]
+const PUBLIC_PATHS = ["/portal/login", "/api/auth"]
 
-export default async function proxy(request: NextRequest) {
+// Fast redirect gate only: checks that the better-auth session cookie exists.
+// Real DB-backed validation happens in the lib/session.ts guards on every
+// portal page and API route — a forged cookie gets past this redirect but
+// nothing else.
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
     return NextResponse.next()
   }
 
-  const secret = process.env.AUTH_SECRET
-  const session = request.cookies.get(SESSION_COOKIE)?.value
-  const authenticated = secret ? await verifySessionValue(secret, session) : false
-
-  if (authenticated) {
+  if (getSessionCookie(request)) {
     return NextResponse.next()
   }
 
@@ -22,8 +22,7 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.json({ detail: "Not authenticated" }, { status: 401 })
   }
 
-  const loginUrl = new URL("/portal/login", request.url)
-  return NextResponse.redirect(loginUrl)
+  return NextResponse.redirect(new URL("/portal/login", request.url))
 }
 
 export const config = {

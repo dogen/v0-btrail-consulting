@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { sql } from "@/lib/db"
+import { requireApiSession } from "@/lib/session"
 
 const createSchema = z.object({
   owner_name: z.string().trim().min(1, "Owner name is required").max(200),
@@ -9,6 +10,9 @@ const createSchema = z.object({
 })
 
 export async function POST(request: Request) {
+  const denied = await requireApiSession(request)
+  if (denied) return denied
+
   const parsed = createSchema.safeParse(await request.json().catch(() => null))
   if (!parsed.success) {
     return NextResponse.json(
@@ -51,7 +55,10 @@ export async function POST(request: Request) {
   return NextResponse.json({ detail: "Could not allocate an audit reference, please retry" }, { status: 500 })
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = await requireApiSession(request)
+  if (denied) return denied
+
   const audits = await sql`
     SELECT a.id, a.reference, a.owner_name, a.state, a.status,
            a.started_at, a.completed_at, a.total_gap::float8 AS total_gap,

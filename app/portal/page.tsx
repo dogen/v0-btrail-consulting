@@ -2,11 +2,13 @@ import { DashboardStats } from "@/components/portal/dashboard-stats"
 import { RecentAudits } from "@/components/portal/recent-audits"
 import { WellSummary } from "@/components/portal/well-summary"
 import { ActivityFeed } from "@/components/portal/activity-feed"
+import { requireSession } from "@/lib/session"
 
 // Live data on every request — never serve a stale prerender
 export const dynamic = "force-dynamic"
 
-export default function PortalPage() {
+export default async function PortalPage() {
+  await requireSession()
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div>

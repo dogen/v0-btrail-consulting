@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { sql } from "@/lib/db"
+import { requireApiSession } from "@/lib/session"
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const denied = await requireApiSession(request)
+  if (denied) return denied
+
   const { id } = await params
   if (!z.string().uuid().safeParse(id).success) {
     return NextResponse.json({ detail: "Audit not found" }, { status: 404 })
