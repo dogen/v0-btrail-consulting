@@ -39,8 +39,9 @@ export function ServicesSection() {
             Comprehensive royalty auditing for mineral owners
           </h2>
           <p className="text-muted-foreground text-lg">
-            We apply rigorous accounting standards and deep industry knowledge to ensure 
-            you receive every dollar you&apos;re entitled to under your lease agreements.
+            We pair rigorous forensic accounting with an AI-native royalty recovery tool
+            that reads your division orders, JIBs, production data, and revenue statements
+            as one — so nothing slips through the gaps between them.
           </p>
         </div>
 

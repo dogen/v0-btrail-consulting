@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, FileText, TrendingUp } from "lucide-react"
+import { ArrowRight, FileText, TrendingUp, ShieldCheck } from "lucide-react"
 
 export function HeroSection() {
   return (
@@ -15,9 +15,10 @@ export function HeroSection() {
               Recover what you&apos;re owed from oil and gas royalties
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-xl">
-              We specialize in forensic auditing for mineral rights and royalty owners 
-              in the Green River and Bakken formations. Our detailed production analysis 
-              identifies underpayments and ensures you receive accurate compensation.
+              We specialize in forensic auditing for mineral rights and royalty owners
+              in the Green River and Bakken formations. Our AI-native audit engine brings
+              your division orders, JIBs, production data, and revenue statements together
+              in one place — and finds the underpayments hiding in the gaps between them.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="#contact">
@@ -31,6 +32,13 @@ export function HeroSection() {
                   How It Works
                 </Button>
               </Link>
+            </div>
+            <div className="mt-8 flex items-start gap-3 text-sm text-muted-foreground max-w-xl">
+              <ShieldCheck className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+              <p>
+                Every document is analyzed by a local AI model on our own hardware.
+                Nothing goes to the cloud — the loop is closed, so your data can&apos;t leave it.
+              </p>
             </div>
           </div>
 

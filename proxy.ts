@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { getSessionCookie } from "better-auth/cookies"
 
-const PUBLIC_PATHS = ["/portal/login", "/api/auth"]
+const PUBLIC_PATHS = ["/portal/login", "/api/auth", "/api/contact"]
 
 // Fast redirect gate only: checks that the better-auth session cookie exists.
 // Real DB-backed validation happens in the lib/session.ts guards on every

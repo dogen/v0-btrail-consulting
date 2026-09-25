@@ -7,27 +7,27 @@ const steps = [
   },
   {
     number: "02",
-    title: "Data Collection",
+    title: "Gather the Siloed Records",
     description:
-      "Upon engagement, we gather production records, check stubs, division orders, and operator correspondence. We also obtain state regulatory filings and third-party data.",
+      "Upon engagement, we collect the documents that never talk to each other: division orders, joint interest billings (JIBs), raw production data, and itemized revenue statements — supplemented by state regulatory filings and third-party sources.",
   },
   {
     number: "03",
-    title: "Forensic Analysis",
+    title: "Unify the Data",
     description:
-      "Our team performs detailed reconciliation of reported vs. actual production, pricing verification, deduction analysis, and lease term compliance review.",
+      "We normalize every record into a single cross-referenced dataset. Underpayments that are invisible in any one document become obvious when the sources are read side by side.",
   },
   {
     number: "04",
-    title: "Findings Report",
+    title: "AI-Native Forensic Analysis",
     description:
-      "We deliver a comprehensive audit report documenting discrepancies, quantifying underpayments, and providing supporting evidence for each finding.",
+      "Our royalty recovery engine — a local AI model running entirely on our own hardware — reconciles reported versus actual production, verifies pricing and deductions, and checks every calculation against your lease terms.",
   },
   {
     number: "05",
-    title: "Recovery Support",
+    title: "Findings & Recovery",
     description:
-      "We assist with operator negotiations and provide expert testimony if needed. Our work product is designed to withstand legal scrutiny.",
+      "We deliver a comprehensive audit report documenting each discrepancy with supporting evidence, then assist with operator negotiations and provide expert testimony if needed. Our work product is designed to withstand legal scrutiny.",
   },
 ]
 
@@ -43,8 +43,10 @@ export function ProcessSection() {
             A methodical approach to royalty recovery
           </h2>
           <p className="text-muted-foreground text-lg">
-            Our audit methodology follows established forensic accounting standards 
-            and has been refined through years of oil and gas industry experience.
+            Royalty underpayments hide in the gaps between siloed documents. Our
+            methodology closes those gaps — bringing every record into one dataset and
+            putting an AI-native audit engine to work on it, guided by established
+            forensic accounting standards.
           </p>
         </div>
 

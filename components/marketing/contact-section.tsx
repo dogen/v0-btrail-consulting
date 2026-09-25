@@ -5,19 +5,35 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Mail, Phone, MapPin } from "lucide-react"
+import { Mail, Phone, MapPin, User } from "lucide-react"
 
 export function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsSubmitting(false)
-    setSubmitted(true)
+    setError(null)
+    const form = e.currentTarget
+    const data = Object.fromEntries(new FormData(form).entries())
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        throw new Error(body?.detail ?? "Something went wrong")
+      }
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -39,11 +55,20 @@ export function ContactSection() {
             <div className="space-y-6">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center">
+                  <User className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Contact</p>
+                  <p className="text-foreground">Austin Fay</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center">
                   <Mail className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="text-foreground">contact@forensicroyalty.com</p>
+                  <p className="text-foreground">austin@btrail.io</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -52,7 +77,7 @@ export function ContactSection() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Phone</p>
-                  <p className="text-foreground">(701) 555-0142</p>
+                  <p className="text-foreground">(512) 820-7033</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -82,6 +107,11 @@ export function ContactSection() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot field: hidden from humans, catches bots */}
+                <div className="hidden" aria-hidden="true">
+                  <Label htmlFor="company">Company</Label>
+                  <Input id="company" name="company" tabIndex={-1} autoComplete="off" />
+                </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
@@ -125,6 +155,12 @@ export function ContactSection() {
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? "Submitting..." : "Submit Request"}
                 </Button>
+
+                {error && (
+                  <p className="text-sm text-destructive text-center" role="alert">
+                    {error} — or email us directly at austin@btrail.io.
+                  </p>
+                )}
 
                 <p className="text-xs text-muted-foreground text-center">
                   Your information is kept strictly confidential.

@@ -1,6 +1,7 @@
 import { Header } from "@/components/marketing/header"
 import { HeroSection } from "@/components/marketing/hero-section"
 import { ServicesSection } from "@/components/marketing/services-section"
+import { SecuritySection } from "@/components/marketing/security-section"
 import { FormationsSection } from "@/components/marketing/formations-section"
 import { ProcessSection } from "@/components/marketing/process-section"
 import { ContactSection } from "@/components/marketing/contact-section"
@@ -12,6 +13,7 @@ export default function Page() {
       <Header />
       <HeroSection />
       <ServicesSection />
+      <SecuritySection />
       <FormationsSection />
       <ProcessSection />
       <ContactSection />
